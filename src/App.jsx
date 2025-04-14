@@ -8,7 +8,7 @@ import NotFound from "./pages/NotFound";
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
   const location = useLocation();
   const [activeLink, setActiveLink] = useState(location.pathname);
   const [showMenuHint, setShowMenuHint] = useState(false);
@@ -32,33 +32,28 @@ function App() {
     
     // Initialize sidebar state based on screen size
     const handleResize = () => {
-      setSidebarOpen(window.innerWidth >= 1024);
+      const isDesktop = window.innerWidth >= 1024;
+      setSidebarOpen(isDesktop);
     };
-    
-    // Set initial state
-    handleResize();
     
     // Add event listener for window resize
     window.addEventListener('resize', handleResize);
     
     // Show menu hint after a short delay on mobile devices
-    if (window.innerWidth < 1024) {
-      const hintTimer = setTimeout(() => {
-        if (!sidebarOpen) {
-          setShowMenuHint(true);
-          // Auto-hide the hint after 5 seconds
-          setTimeout(() => setShowMenuHint(false), 5000);
-        }
+    let hintTimer;
+    if (window.innerWidth < 1024 && !sidebarOpen) {
+      hintTimer = setTimeout(() => {
+        setShowMenuHint(true);
+        // Auto-hide the hint after 5 seconds
+        setTimeout(() => setShowMenuHint(false), 5000);
       }, 2000);
-      
-      return () => {
-        clearTimeout(hintTimer);
-        window.removeEventListener('resize', handleResize);
-      };
     }
     
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    return () => {
+      clearTimeout(hintTimer);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [sidebarOpen]);
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -118,7 +113,7 @@ function App() {
     <div className="flex h-screen overflow-hidden">
       {/* Mobile sidebar backdrop */}
       <AnimatePresence>
-        {sidebarOpen && (
+        {sidebarOpen && window.innerWidth < 1024 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -132,7 +127,7 @@ function App() {
 
       {/* Sidebar */}
       <motion.aside
-        initial={{ x: -280 }}
+        initial={{ x: window.innerWidth >= 1024 ? 0 : -280 }}
         animate={{ x: sidebarOpen ? 0 : -280 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
         className="fixed top-0 left-0 z-30 h-full w-64 lg:w-72 bg-white dark:bg-surface-800 border-r border-surface-200 dark:border-surface-700 lg:relative lg:translate-x-0"
