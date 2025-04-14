@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
-import { Sun, Moon, Menu, X, User, Calendar, FileText, BarChart3, Settings } from "lucide-react";
+import { Routes, Route, Link, useLocation } from "react-router-dom";
+import { Sun, Moon, Menu, X, User, Calendar, FileText, BarChart3, Settings, Users, Briefcase, Building, Home as HomeIcon, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Home from "./pages/Home";
 import Employees from "./pages/Employees";
@@ -9,6 +9,13 @@ import NotFound from "./pages/NotFound";
 function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
+  const [activeLink, setActiveLink] = useState(location.pathname);
+
+  useEffect(() => {
+    // Set active link based on current location
+    setActiveLink(location.pathname);
+  }, [location]);
 
   useEffect(() => {
     // Check user preference
@@ -38,12 +45,42 @@ function App() {
     setSidebarOpen(!sidebarOpen);
   };
 
-  const navItems = [
-    { name: "Dashboard", icon: <BarChart3 size={20} />, path: "/" },
-    { name: "Employees", icon: <User size={20} />, path: "/employees" },
-    { name: "Attendance", icon: <Calendar size={20} />, path: "/attendance" },
-    { name: "Documents", icon: <FileText size={20} />, path: "/documents" },
-    { name: "Settings", icon: <Settings size={20} />, path: "/settings" },
+  const closeSidebarOnMobile = () => {
+    if (window.innerWidth < 1024) {
+      setSidebarOpen(false);
+    }
+  };
+
+  // Organized navigation with categories
+  const navCategories = [
+    {
+      name: "Overview",
+      items: [
+        { name: "Dashboard", icon: <HomeIcon size={20} />, path: "/" }
+      ]
+    },
+    {
+      name: "Human Resources",
+      items: [
+        { name: "Employee Directory", icon: <Users size={20} />, path: "/employees" },
+        { name: "Attendance", icon: <Calendar size={20} />, path: "/attendance" }
+      ]
+    },
+    {
+      name: "Administration",
+      items: [
+        { name: "Documents", icon: <FileText size={20} />, path: "/documents" },
+        { name: "Departments", icon: <Building size={20} />, path: "/departments" },
+        { name: "Positions", icon: <Briefcase size={20} />, path: "/positions" }
+      ]
+    },
+    {
+      name: "Analytics",
+      items: [
+        { name: "Reports", icon: <BarChart3 size={20} />, path: "/reports" },
+        { name: "Settings", icon: <Settings size={20} />, path: "/settings" }
+      ]
+    }
   ];
 
   return (
@@ -86,23 +123,46 @@ function App() {
           </div>
           
           <nav className="flex-1 overflow-y-auto py-4 px-3">
-            <ul className="space-y-1">
-              {navItems.map((item) => (
-                <li key={item.name}>
-                  <a
-                    href={item.path}
-                    className="flex items-center px-4 py-3 text-surface-700 dark:text-surface-300 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-700 group transition-all duration-200"
-                  >
-                    <span className="mr-3 text-surface-500 dark:text-surface-400 group-hover:text-primary dark:group-hover:text-primary-light transition-colors duration-200">
-                      {item.icon}
-                    </span>
-                    <span className="font-medium group-hover:text-primary dark:group-hover:text-primary-light transition-colors duration-200">
-                      {item.name}
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
+            {navCategories.map((category, idx) => (
+              <div key={idx} className="mb-6">
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-surface-500 dark:text-surface-400 px-4 mb-2">
+                  {category.name}
+                </h3>
+                <ul className="space-y-1">
+                  {category.items.map((item) => (
+                    <li key={item.name}>
+                      <Link
+                        to={item.path}
+                        className={`flex items-center px-4 py-3 rounded-lg transition-all duration-200 ${
+                          activeLink === item.path
+                            ? "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-light"
+                            : "text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-700"
+                        }`}
+                        onClick={closeSidebarOnMobile}
+                      >
+                        <span className={`mr-3 ${
+                          activeLink === item.path
+                            ? "text-primary dark:text-primary-light"
+                            : "text-surface-500 dark:text-surface-400"
+                        }`}>
+                          {item.icon}
+                        </span>
+                        <span className={`font-medium ${
+                          activeLink === item.path
+                            ? "font-semibold text-primary dark:text-primary-light"
+                            : ""
+                        }`}>
+                          {item.name}
+                        </span>
+                        {activeLink === item.path && (
+                          <ChevronRight size={16} className="ml-auto text-primary dark:text-primary-light" />
+                        )}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </nav>
           
           <div className="p-4 border-t border-surface-200 dark:border-surface-700">
