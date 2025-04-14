@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import { Sun, Moon, Menu, X, User, Calendar, FileText, BarChart3, Settings } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Home from "./pages/Home";
+import Employees from "./pages/Employees";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -160,6 +161,7 @@ function App() {
         <main className="flex-1 overflow-y-auto bg-surface-50 dark:bg-surface-900 p-4 md:p-6">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/employees" element={<Employees />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
