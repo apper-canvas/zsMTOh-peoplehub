@@ -11,6 +11,7 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const [activeLink, setActiveLink] = useState(location.pathname);
+  const [showMenuHint, setShowMenuHint] = useState(false);
 
   useEffect(() => {
     // Set active link based on current location
@@ -18,7 +19,7 @@ function App() {
   }, [location]);
 
   useEffect(() => {
-    // Check user preference
+    // Check user preference for dark mode
     if (localStorage.theme === 'dark' || 
         (!('theme' in localStorage) && 
          window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -28,6 +29,35 @@ function App() {
       setDarkMode(false);
       document.documentElement.classList.remove('dark');
     }
+    
+    // Initialize sidebar state based on screen size
+    const handleResize = () => {
+      setSidebarOpen(window.innerWidth >= 1024);
+    };
+    
+    // Set initial state
+    handleResize();
+    
+    // Add event listener for window resize
+    window.addEventListener('resize', handleResize);
+    
+    // Show menu hint after a short delay on mobile devices
+    if (window.innerWidth < 1024) {
+      const hintTimer = setTimeout(() => {
+        if (!sidebarOpen) {
+          setShowMenuHint(true);
+          // Auto-hide the hint after 5 seconds
+          setTimeout(() => setShowMenuHint(false), 5000);
+        }
+      }, 2000);
+      
+      return () => {
+        clearTimeout(hintTimer);
+        window.removeEventListener('resize', handleResize);
+      };
+    }
+    
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const toggleDarkMode = () => {
@@ -43,6 +73,7 @@ function App() {
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
+    setShowMenuHint(false); // Hide hint when sidebar is toggled
   };
 
   const closeSidebarOnMobile = () => {
@@ -188,12 +219,30 @@ function App() {
         {/* Header */}
         <header className="bg-white dark:bg-surface-800 border-b border-surface-200 dark:border-surface-700">
           <div className="flex items-center justify-between px-4 py-3">
-            <button
-              onClick={toggleSidebar}
-              className="p-2 rounded-md hover:bg-surface-100 dark:hover:bg-surface-700 lg:hidden"
-            >
-              <Menu size={20} />
-            </button>
+            <div className="relative">
+              <button
+                onClick={toggleSidebar}
+                className="p-2 rounded-md bg-primary text-white hover:bg-primary/90 transition-colors duration-200 flex items-center justify-center lg:bg-surface-100 lg:dark:bg-surface-700 lg:text-surface-800 lg:dark:text-surface-100 lg:hover:bg-surface-200 lg:dark:hover:bg-surface-600"
+                aria-label="Toggle menu"
+              >
+                <Menu size={20} />
+              </button>
+              
+              {/* Menu hint tooltip */}
+              <AnimatePresence>
+                {showMenuHint && !sidebarOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 5 }}
+                    className="absolute left-0 top-full mt-2 px-3 py-2 bg-primary text-white text-sm rounded-md shadow-lg whitespace-nowrap z-50"
+                  >
+                    Click to open menu
+                    <div className="absolute -top-1 left-3 w-2 h-2 bg-primary rotate-45"></div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
             
             <div className="flex items-center space-x-3">
               <button
