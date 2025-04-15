@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, isSameMonth, isSameDay, addDays, parseISO } from "date-fns";
 import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, Filter, X, Calendar as CalendarIcon, Clock, MapPin } from "lucide-react";
+import { ChevronLeft, ChevronRight, Filter, X, Calendar as CalendarIcon, Clock, MapPin, Plus } from "lucide-react";
 import dataService from "../services/dataService";
 
 function Calendar() {
@@ -266,6 +266,11 @@ function Calendar() {
                     </div>
                   )}
                 </div>
+                
+                <button className="px-3 py-2 rounded-lg bg-primary text-white hover:bg-primary-dark flex items-center text-sm">
+                  <Plus size={16} className="mr-2" />
+                  <span>Add Event</span>
+                </button>
                 
                 <button className="px-3 py-2 rounded-lg bg-primary text-white hover:bg-primary-dark flex items-center text-sm">
                   <CalendarIcon size={16} className="mr-2" />
