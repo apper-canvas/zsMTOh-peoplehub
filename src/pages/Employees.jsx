@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Search, Filter, Plus, ChevronDown, Upload, Download, UserPlus, Mail, Phone, MapPin, Briefcase, Building, X, Check, Eye } from "lucide-react";
+import { Search, Filter, Plus, ChevronDown, Upload, Download, UserPlus, Mail, Phone, MapPin, Briefcase, Building, X, Check, Eye, User } from "lucide-react";
 
 // Sample expanded employee data
 const EMPLOYEES = [
