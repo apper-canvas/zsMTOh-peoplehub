@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, Link, useLocation } from "react-router-dom";
-import { Sun, Moon, Menu, X, User, Calendar, FileText, BarChart3, Settings, Users, Briefcase, Building, Home as HomeIcon, ChevronRight } from "lucide-react";
+import { Sun, Moon, Menu, X, User, Calendar, FileText, BarChart3, Settings as SettingsIcon, Users, Briefcase, Building, Home as HomeIcon, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Home from "./pages/Home";
 import Employees from "./pages/Employees";
@@ -110,7 +110,7 @@ function App() {
       name: "Analytics",
       items: [
         { name: "Reports", icon: <BarChart3 size={20} />, path: "/reports" },
-        { name: "Settings", icon: <Settings size={20} />, path: "/settings" }
+        { name: "Settings", icon: <SettingsIcon size={20} />, path: "/settings" }
       ]
     }
   ];
