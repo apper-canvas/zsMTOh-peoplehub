@@ -76,15 +76,15 @@ function EmployeeFormModal({ isOpen, onClose, mode, initialData }) {
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-white dark:bg-surface-800 rounded-xl shadow-lg border border-surface-200 dark:border-surface-700 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+        className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
       >
-        <div className="flex justify-between items-center p-4 border-b border-surface-200 dark:border-surface-700">
-          <h3 className="text-lg font-semibold text-surface-900 dark:text-surface-100">
+        <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
             {mode === "add" ? "Add New Employee" : "Edit Employee"}
           </h3>
           <button 
             onClick={onClose}
-            className="p-1 rounded-full hover:bg-surface-100 dark:hover:bg-surface-700 text-surface-500 dark:text-surface-400"
+            className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400"
           >
             <X size={20} />
           </button>
@@ -94,12 +94,12 @@ function EmployeeFormModal({ isOpen, onClose, mode, initialData }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Personal Information */}
             <div className="col-span-2">
-              <h4 className="text-md font-medium text-surface-900 dark:text-surface-100 mb-3">Personal Information</h4>
+              <h4 className="text-md font-medium text-gray-900 dark:text-gray-100 mb-3">Personal Information</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">First Name</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">First Name</label>
                   <div className="relative">
-                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-surface-500">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
                       <User size={16} />
                     </span>
                     <input
@@ -107,19 +107,19 @@ function EmployeeFormModal({ isOpen, onClose, mode, initialData }) {
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleChange}
-                      className="pl-10 w-full rounded-md border border-surface-300 dark:border-surface-600 py-2 px-3 bg-white dark:bg-surface-800 text-surface-900 dark:text-surface-100"
+                      className="pl-10 w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 px-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                       required
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">Last Name</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Last Name</label>
                   <input
                     type="text"
                     name="lastName"
                     value={formData.lastName}
                     onChange={handleChange}
-                    className="w-full rounded-md border border-surface-300 dark:border-surface-600 py-2 px-3 bg-white dark:bg-surface-800 text-surface-900 dark:text-surface-100"
+                    className="w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 px-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                     required
                   />
                 </div>
@@ -128,12 +128,12 @@ function EmployeeFormModal({ isOpen, onClose, mode, initialData }) {
 
             {/* Contact Information */}
             <div className="col-span-2">
-              <h4 className="text-md font-medium text-surface-900 dark:text-surface-100 mb-3">Contact Information</h4>
+              <h4 className="text-md font-medium text-gray-900 dark:text-gray-100 mb-3">Contact Information</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">Email</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
                   <div className="relative">
-                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-surface-500">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
                       <Mail size={16} />
                     </span>
                     <input
@@ -141,15 +141,15 @@ function EmployeeFormModal({ isOpen, onClose, mode, initialData }) {
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      className="pl-10 w-full rounded-md border border-surface-300 dark:border-surface-600 py-2 px-3 bg-white dark:bg-surface-800 text-surface-900 dark:text-surface-100"
+                      className="pl-10 w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 px-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                       required
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">Phone</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Phone</label>
                   <div className="relative">
-                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-surface-500">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
                       <Phone size={16} />
                     </span>
                     <input
@@ -157,15 +157,15 @@ function EmployeeFormModal({ isOpen, onClose, mode, initialData }) {
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
-                      className="pl-10 w-full rounded-md border border-surface-300 dark:border-surface-600 py-2 px-3 bg-white dark:bg-surface-800 text-surface-900 dark:text-surface-100"
+                      className="pl-10 w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 px-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                       required
                     />
                   </div>
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">Location</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Location</label>
                   <div className="relative">
-                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-surface-500">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
                       <MapPin size={16} />
                     </span>
                     <input
@@ -173,7 +173,7 @@ function EmployeeFormModal({ isOpen, onClose, mode, initialData }) {
                       name="location"
                       value={formData.location}
                       onChange={handleChange}
-                      className="pl-10 w-full rounded-md border border-surface-300 dark:border-surface-600 py-2 px-3 bg-white dark:bg-surface-800 text-surface-900 dark:text-surface-100"
+                      className="pl-10 w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 px-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                     />
                   </div>
                 </div>
@@ -182,19 +182,19 @@ function EmployeeFormModal({ isOpen, onClose, mode, initialData }) {
 
             {/* Employment Information */}
             <div className="col-span-2">
-              <h4 className="text-md font-medium text-surface-900 dark:text-surface-100 mb-3">Employment Information</h4>
+              <h4 className="text-md font-medium text-gray-900 dark:text-gray-100 mb-3">Employment Information</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">Department</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Department</label>
                   <div className="relative">
-                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-surface-500">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
                       <Building size={16} />
                     </span>
                     <select
                       name="department"
                       value={formData.department}
                       onChange={handleChange}
-                      className="pl-10 w-full rounded-md border border-surface-300 dark:border-surface-600 py-2 px-3 bg-white dark:bg-surface-800 text-surface-900 dark:text-surface-100"
+                      className="pl-10 w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 px-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                       required
                     >
                       <option value="">Select Department</option>
@@ -210,9 +210,9 @@ function EmployeeFormModal({ isOpen, onClose, mode, initialData }) {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">Position</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Position</label>
                   <div className="relative">
-                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-surface-500">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
                       <Briefcase size={16} />
                     </span>
                     <input
@@ -220,18 +220,18 @@ function EmployeeFormModal({ isOpen, onClose, mode, initialData }) {
                       name="position"
                       value={formData.position}
                       onChange={handleChange}
-                      className="pl-10 w-full rounded-md border border-surface-300 dark:border-surface-600 py-2 px-3 bg-white dark:bg-surface-800 text-surface-900 dark:text-surface-100"
+                      className="pl-10 w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 px-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                       required
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">Status</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
                   <select
                     name="status"
                     value={formData.status}
                     onChange={handleChange}
-                    className="w-full rounded-md border border-surface-300 dark:border-surface-600 py-2 px-3 bg-white dark:bg-surface-800 text-surface-900 dark:text-surface-100"
+                    className="w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 px-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                   >
                     <option value="active">Active</option>
                     <option value="on leave">On Leave</option>
@@ -239,9 +239,9 @@ function EmployeeFormModal({ isOpen, onClose, mode, initialData }) {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">Hire Date</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Hire Date</label>
                   <div className="relative">
-                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-surface-500">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
                       <Calendar size={16} />
                     </span>
                     <input
@@ -249,14 +249,14 @@ function EmployeeFormModal({ isOpen, onClose, mode, initialData }) {
                       name="hireDate"
                       value={formData.hireDate}
                       onChange={handleChange}
-                      className="pl-10 w-full rounded-md border border-surface-300 dark:border-surface-600 py-2 px-3 bg-white dark:bg-surface-800 text-surface-900 dark:text-surface-100"
+                      className="pl-10 w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 px-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                     />
                   </div>
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">Manager</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Manager</label>
                   <div className="relative">
-                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-surface-500">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
                       <Users size={16} />
                     </span>
                     <input
@@ -264,7 +264,7 @@ function EmployeeFormModal({ isOpen, onClose, mode, initialData }) {
                       name="manager"
                       value={formData.manager}
                       onChange={handleChange}
-                      className="pl-10 w-full rounded-md border border-surface-300 dark:border-surface-600 py-2 px-3 bg-white dark:bg-surface-800 text-surface-900 dark:text-surface-100"
+                      className="pl-10 w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 px-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                     />
                   </div>
                 </div>
@@ -273,29 +273,29 @@ function EmployeeFormModal({ isOpen, onClose, mode, initialData }) {
 
             {/* Skills */}
             <div className="col-span-2">
-              <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">Skills (comma separated)</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Skills (comma separated)</label>
               <textarea
                 name="skills"
                 value={formData.skills}
                 onChange={handleChange}
                 rows="3"
-                className="w-full rounded-md border border-surface-300 dark:border-surface-600 py-2 px-3 bg-white dark:bg-surface-800 text-surface-900 dark:text-surface-100"
+                className="w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 px-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                 placeholder="JavaScript, React, Project Management, etc."
               ></textarea>
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-surface-200 dark:border-surface-700">
+          <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
             <button 
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border border-surface-300 dark:border-surface-600 rounded-lg text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-700"
+              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
             >
               Cancel
             </button>
             <button 
               type="submit"
-              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
             >
               {mode === "add" ? "Add Employee" : "Save Changes"}
             </button>
