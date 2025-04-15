@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Employees from "./pages/Employees";
 import Attendance from "./pages/Attendance";
 import Documents from "./pages/Documents";
+import Departments from "./pages/Departments";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -270,6 +271,7 @@ function App() {
             <Route path="/employees" element={<Employees />} />
             <Route path="/attendance" element={<Attendance />} />
             <Route path="/documents" element={<Documents />} />
+            <Route path="/departments" element={<Departments />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
