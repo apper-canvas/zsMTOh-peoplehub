@@ -201,6 +201,9 @@ const DEPARTMENTS = [
   "Executive"
 ];
 
+// Extract unique locations from employees data
+const LOCATIONS = ["All Locations", ...new Set(EMPLOYEES.map(employee => employee.location))];
+
 function Employees() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("All Departments");
@@ -211,7 +214,30 @@ function Employees() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showFormModal, setShowFormModal] = useState(false);
   const [formMode, setFormMode] = useState("add"); // add, edit
+
+  // Filter dropdown states
+  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+  const [statusFilters, setStatusFilters] = useState({
+    active: false,
+    onLeave: false,
+    terminated: false
+  });
+  const [selectedLocation, setSelectedLocation] = useState("All Locations");
+  const [dateFilter, setDateFilter] = useState("all"); // all, 30days, 3months, year, custom
+  const [customDateRange, setCustomDateRange] = useState({
+    from: "",
+    to: ""
+  });
   
+  // Check if any filters are active
+  const isFilterActive = () => {
+    return statusFilters.active || 
+           statusFilters.onLeave || 
+           statusFilters.terminated || 
+           selectedLocation !== "All Locations" || 
+           dateFilter !== "all";
+  };
+
   // Filter employees based on search term and department selection
   useEffect(() => {
     let results = [...EMPLOYEES];
@@ -233,9 +259,60 @@ function Employees() {
     if (selectedDepartment !== "All Departments") {
       results = results.filter(employee => employee.department === selectedDepartment);
     }
+
+    // Apply status filters
+    if (statusFilters.active || statusFilters.onLeave || statusFilters.terminated) {
+      results = results.filter(employee => {
+        if (statusFilters.active && employee.status === "active") return true;
+        if (statusFilters.onLeave && employee.status === "on leave") return true;
+        if (statusFilters.terminated && employee.status === "terminated") return true;
+        return false;
+      });
+    }
+
+    // Apply location filter
+    if (selectedLocation !== "All Locations") {
+      results = results.filter(employee => employee.location === selectedLocation);
+    }
+
+    // Apply date filter
+    if (dateFilter !== "all") {
+      const today = new Date();
+      let fromDate = new Date();
+      
+      switch (dateFilter) {
+        case "30days":
+          fromDate.setDate(today.getDate() - 30);
+          break;
+        case "3months":
+          fromDate.setMonth(today.getMonth() - 3);
+          break;
+        case "year":
+          fromDate.setFullYear(today.getFullYear() - 1);
+          break;
+        case "custom":
+          if (customDateRange.from) {
+            fromDate = new Date(customDateRange.from);
+          }
+          break;
+        default:
+          break;
+      }
+      
+      results = results.filter(employee => {
+        const hireDate = new Date(employee.hireDate);
+        
+        if (dateFilter === "custom" && customDateRange.to) {
+          const toDate = new Date(customDateRange.to);
+          return hireDate >= fromDate && hireDate <= toDate;
+        }
+        
+        return hireDate >= fromDate;
+      });
+    }
     
     setFilteredEmployees(results);
-  }, [searchTerm, selectedDepartment]);
+  }, [searchTerm, selectedDepartment, statusFilters, selectedLocation, dateFilter, customDateRange]);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -271,6 +348,17 @@ function Employees() {
     setSelectedEmployee(employee);
     setShowDetailModal(false);
     setShowFormModal(true);
+  };
+
+  const clearAllFilters = () => {
+    setStatusFilters({
+      active: false,
+      onLeave: false,
+      terminated: false
+    });
+    setSelectedLocation("All Locations");
+    setDateFilter("all");
+    setCustomDateRange({ from: "", to: "" });
   };
 
   return (
@@ -382,9 +470,168 @@ function Employees() {
               <button className="p-2 rounded-lg border border-surface-300 dark:border-surface-600 hover:bg-surface-100 dark:hover:bg-surface-700 text-surface-700 dark:text-surface-300">
                 <Upload size={18} />
               </button>
-              <button className="p-2 rounded-lg border border-surface-300 dark:border-surface-600 hover:bg-surface-100 dark:hover:bg-surface-700 text-surface-700 dark:text-surface-300">
-                <Filter size={18} />
-              </button>
+              <div className="relative">
+                <button 
+                  className={`p-2 rounded-lg border ${isFilterActive() 
+                    ? 'border-primary bg-primary/10 text-primary dark:border-primary dark:bg-primary/20 dark:text-primary-light' 
+                    : 'border-surface-300 dark:border-surface-600 hover:bg-surface-100 dark:hover:bg-surface-700 text-surface-700 dark:text-surface-300'}`}
+                  onClick={() => setShowFilterDropdown(!showFilterDropdown)}
+                >
+                  <Filter size={18} />
+                </button>
+
+                {showFilterDropdown && (
+                  <div className="absolute right-0 z-10 mt-2 w-72 bg-white dark:bg-surface-800 border border-surface-300 dark:border-surface-600 rounded-lg shadow-lg overflow-hidden">
+                    <div className="p-3 border-b border-surface-200 dark:border-surface-700 flex justify-between items-center">
+                      <h3 className="font-medium text-surface-900 dark:text-surface-100">Filters</h3>
+                      <button 
+                        onClick={clearAllFilters} 
+                        className="text-xs text-primary hover:text-primary-dark dark:hover:text-primary-light"
+                      >
+                        Clear All
+                      </button>
+                    </div>
+                    
+                    {/* Status Filters */}
+                    <div className="p-3 border-b border-surface-200 dark:border-surface-700">
+                      <h4 className="text-xs uppercase font-semibold text-surface-500 dark:text-surface-400 mb-2">Status</h4>
+                      <div className="space-y-2">
+                        <label className="flex items-center">
+                          <input 
+                            type="checkbox" 
+                            className="rounded border-surface-300 text-primary focus:ring-primary dark:border-surface-600 dark:bg-surface-700"
+                            checked={statusFilters.active}
+                            onChange={() => setStatusFilters({...statusFilters, active: !statusFilters.active})}
+                          />
+                          <span className="ml-2 text-surface-700 dark:text-surface-300">Active</span>
+                        </label>
+                        <label className="flex items-center">
+                          <input 
+                            type="checkbox" 
+                            className="rounded border-surface-300 text-primary focus:ring-primary dark:border-surface-600 dark:bg-surface-700"
+                            checked={statusFilters.onLeave}
+                            onChange={() => setStatusFilters({...statusFilters, onLeave: !statusFilters.onLeave})}
+                          />
+                          <span className="ml-2 text-surface-700 dark:text-surface-300">On Leave</span>
+                        </label>
+                        <label className="flex items-center">
+                          <input 
+                            type="checkbox" 
+                            className="rounded border-surface-300 text-primary focus:ring-primary dark:border-surface-600 dark:bg-surface-700"
+                            checked={statusFilters.terminated}
+                            onChange={() => setStatusFilters({...statusFilters, terminated: !statusFilters.terminated})}
+                          />
+                          <span className="ml-2 text-surface-700 dark:text-surface-300">Terminated</span>
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Location Filter */}
+                    <div className="p-3 border-b border-surface-200 dark:border-surface-700">
+                      <h4 className="text-xs uppercase font-semibold text-surface-500 dark:text-surface-400 mb-2">Location</h4>
+                      <select 
+                        className="w-full rounded-md border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-700 text-surface-900 dark:text-surface-100 px-3 py-1.5"
+                        value={selectedLocation}
+                        onChange={(e) => setSelectedLocation(e.target.value)}
+                      >
+                        {LOCATIONS.map(location => (
+                          <option key={location} value={location}>{location}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Date Filters */}
+                    <div className="p-3">
+                      <h4 className="text-xs uppercase font-semibold text-surface-500 dark:text-surface-400 mb-2">Hire Date</h4>
+                      <div className="space-y-2">
+                        <label className="flex items-center">
+                          <input 
+                            type="radio" 
+                            name="dateFilter" 
+                            className="border-surface-300 text-primary focus:ring-primary dark:border-surface-600 dark:bg-surface-700"
+                            checked={dateFilter === "all"}
+                            onChange={() => setDateFilter("all")}
+                          />
+                          <span className="ml-2 text-surface-700 dark:text-surface-300">All Time</span>
+                        </label>
+                        <label className="flex items-center">
+                          <input 
+                            type="radio" 
+                            name="dateFilter" 
+                            className="border-surface-300 text-primary focus:ring-primary dark:border-surface-600 dark:bg-surface-700"
+                            checked={dateFilter === "30days"}
+                            onChange={() => setDateFilter("30days")}
+                          />
+                          <span className="ml-2 text-surface-700 dark:text-surface-300">Last 30 Days</span>
+                        </label>
+                        <label className="flex items-center">
+                          <input 
+                            type="radio" 
+                            name="dateFilter" 
+                            className="border-surface-300 text-primary focus:ring-primary dark:border-surface-600 dark:bg-surface-700"
+                            checked={dateFilter === "3months"}
+                            onChange={() => setDateFilter("3months")}
+                          />
+                          <span className="ml-2 text-surface-700 dark:text-surface-300">Last 3 Months</span>
+                        </label>
+                        <label className="flex items-center">
+                          <input 
+                            type="radio" 
+                            name="dateFilter" 
+                            className="border-surface-300 text-primary focus:ring-primary dark:border-surface-600 dark:bg-surface-700"
+                            checked={dateFilter === "year"}
+                            onChange={() => setDateFilter("year")}
+                          />
+                          <span className="ml-2 text-surface-700 dark:text-surface-300">Last Year</span>
+                        </label>
+                        <label className="flex items-center">
+                          <input 
+                            type="radio" 
+                            name="dateFilter" 
+                            className="border-surface-300 text-primary focus:ring-primary dark:border-surface-600 dark:bg-surface-700"
+                            checked={dateFilter === "custom"}
+                            onChange={() => setDateFilter("custom")}
+                          />
+                          <span className="ml-2 text-surface-700 dark:text-surface-300">Custom Range</span>
+                        </label>
+                        
+                        {dateFilter === "custom" && (
+                          <div className="mt-2 grid grid-cols-2 gap-2">
+                            <div>
+                              <label className="block text-xs text-surface-500 dark:text-surface-400 mb-1">From</label>
+                              <input 
+                                type="date" 
+                                className="w-full rounded-md border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-700 text-surface-900 dark:text-surface-100 px-2 py-1 text-sm"
+                                value={customDateRange.from}
+                                onChange={(e) => setCustomDateRange({...customDateRange, from: e.target.value})}
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs text-surface-500 dark:text-surface-400 mb-1">To</label>
+                              <input 
+                                type="date" 
+                                className="w-full rounded-md border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-700 text-surface-900 dark:text-surface-100 px-2 py-1 text-sm"
+                                value={customDateRange.to}
+                                onChange={(e) => setCustomDateRange({...customDateRange, to: e.target.value})}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Apply Button */}
+                    <div className="p-3 bg-surface-50 dark:bg-surface-700/30 flex justify-end">
+                      <button 
+                        className="px-4 py-1.5 bg-primary text-white rounded-lg hover:bg-primary-dark text-sm"
+                        onClick={() => setShowFilterDropdown(false)}
+                      >
+                        Apply Filters
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
