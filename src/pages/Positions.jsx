@@ -388,7 +388,7 @@ const Positions = () => {
           </div>
           <button
             onClick={openAddModal}
-            className="mt-3 md:mt-0 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg flex items-center justify-center transition-colors duration-200"
+            className="mt-3 md:mt-0 px-4 py-2 bg-primary hover:bg-primary focus:bg-primary text-white rounded-lg flex items-center justify-center transition-colors duration-200"
           >
             <Plus size={16} className="mr-2" />
             Add Position
@@ -655,7 +655,7 @@ const Positions = () => {
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div className="fixed inset-0 transition-opacity">
-              <div className="absolute inset-0 bg-surface-900 opacity-75"></div>
+              <div className="absolute inset-0 bg-surface-900 opacity-50"></div>
             </div>
             <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>&#8203;
             <div 
@@ -816,7 +816,7 @@ const Positions = () => {
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors duration-200"
+                    className="px-4 py-2 bg-primary hover:bg-primary focus:bg-primary text-white rounded-lg transition-colors duration-200"
                   >
                     Add Position
                   </button>
@@ -832,7 +832,7 @@ const Positions = () => {
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div className="fixed inset-0 transition-opacity">
-              <div className="absolute inset-0 bg-surface-900 opacity-75"></div>
+              <div className="absolute inset-0 bg-surface-900 opacity-50"></div>
             </div>
             <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>&#8203;
             <div 
@@ -993,7 +993,7 @@ const Positions = () => {
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors duration-200"
+                    className="px-4 py-2 bg-primary hover:bg-primary focus:bg-primary text-white rounded-lg transition-colors duration-200"
                   >
                     Save Changes
                   </button>
@@ -1009,7 +1009,7 @@ const Positions = () => {
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div className="fixed inset-0 transition-opacity">
-              <div className="absolute inset-0 bg-surface-900 opacity-75"></div>
+              <div className="absolute inset-0 bg-surface-900 opacity-50"></div>
             </div>
             <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>&#8203;
             <div 
@@ -1089,7 +1089,7 @@ const Positions = () => {
                 <button
                   type="button"
                   onClick={() => setShowViewModal(false)}
-                  className="px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors duration-200"
+                  className="px-4 py-2 bg-primary hover:bg-primary focus:bg-primary text-white rounded-lg transition-colors duration-200"
                 >
                   Close
                 </button>
@@ -1104,7 +1104,7 @@ const Positions = () => {
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div className="fixed inset-0 transition-opacity">
-              <div className="absolute inset-0 bg-surface-900 opacity-75"></div>
+              <div className="absolute inset-0 bg-surface-900 opacity-50"></div>
             </div>
             <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>&#8203;
             <div 
