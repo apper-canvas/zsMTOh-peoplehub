@@ -9,6 +9,7 @@ import Documents from "./pages/Documents";
 import Departments from "./pages/Departments";
 import Positions from "./pages/Positions";
 import Reports from "./pages/Reports";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -276,6 +277,7 @@ function App() {
             <Route path="/departments" element={<Departments />} />
             <Route path="/positions" element={<Positions />} />
             <Route path="/reports" element={<Reports />} />
+            <Route path="/settings" element={<Settings />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
