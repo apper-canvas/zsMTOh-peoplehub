@@ -274,7 +274,6 @@ const Attendance = () => {
 
           {/* Calendar days */}
           {calendarData.map((day) => {
-            const isCurrentMonth = isSameMonth(day.date, currentMonth);
             const isCurrentDay = isToday(day.date);
             
             return (
@@ -438,7 +437,9 @@ const Attendance = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button 
                       onClick={() => handleViewDetails(record.id)}
-                      className="text-primary hover:text-primary/80 dark:text-primary-light dark:hover:text-primary-light/80"
+                      className="text-primary hover:text-primary/80 dark:text-primary-light dark:hover:text-primary-light/80 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 rounded"
+                      type="button"
+                      aria-label={`View details for ${record.employee}`}
                     >
                       View
                     </button>
