@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, Link, useLocation } from "react-router-dom";
-import { Sun, Moon, Menu, X, User, Calendar, FileText, BarChart3, Settings as SettingsIcon, Users, Briefcase, Building, Home as HomeIcon, ChevronRight } from "lucide-react";
+import { Sun, Moon, Menu, X, User, CalendarIcon, FileText, BarChart3, Settings as SettingsIcon, Users, Briefcase, Building, Home as HomeIcon, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Home from "./pages/Home";
 import Employees from "./pages/Employees";
@@ -96,8 +96,8 @@ function App() {
       name: "Human Resources",
       items: [
         { name: "Employee Directory", icon: <Users size={20} />, path: "/employees" },
-        { name: "Attendance", icon: <Calendar size={20} />, path: "/attendance" },
-        { name: "Calendar", icon: <Calendar size={20} />, path: "/calendar" }
+        { name: "Attendance", icon: <CalendarIcon size={20} />, path: "/attendance" },
+        { name: "Calendar", icon: <CalendarIcon size={20} />, path: "/calendar" }
       ]
     },
     {
