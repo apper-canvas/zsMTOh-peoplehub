@@ -252,13 +252,16 @@ function Calendar() {
                     <div className="absolute top-full right-0 mt-2 bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-lg shadow-lg z-10 p-3 w-48">
                       <div className="text-sm font-medium mb-2 text-surface-900 dark:text-surface-100">Event Types</div>
                       {filterOptions.map(option => (
-                        <div key={option.type} className="flex items-center mb-2 last:mb-0">
-                          <button
-                            className={`w-4 h-4 rounded-sm mr-2 ${option.color} ${!filters[option.type] ? 'opacity-30' : ''}`}
-                            onClick={() => toggleFilterType(option.type)}
-                          />
-                          <span className="text-sm text-surface-700 dark:text-surface-300">{option.label}</span>
-                        </div>
+                        <button
+                          key={option.type}
+                          className="flex items-center w-full px-2 py-1.5 rounded-md mb-1 last:mb-0 hover:bg-surface-100 dark:hover:bg-surface-700 cursor-pointer transition-colors"
+                          onClick={() => toggleFilterType(option.type)}
+                        >
+                          <span className={`w-4 h-4 rounded-sm mr-2 ${option.color} ${!filters[option.type] ? 'opacity-30' : ''}`}></span>
+                          <span className={`text-sm ${!filters[option.type] ? 'text-surface-500 dark:text-surface-500' : 'text-surface-700 dark:text-surface-300'}`}>
+                            {option.label}
+                          </span>
+                        </button>
                       ))}
                     </div>
                   )}
