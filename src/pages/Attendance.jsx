@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, isSameMonth, isToday, parseISO } from "date-fns";
-import { Calendar, ChevronLeft, ChevronRight, Filter, Download, User, Clock, CalendarDays, Users } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, Filter, Download, User, Clock, CalendarDays, Users, X } from "lucide-react";
 
 const Attendance = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(8);
+  const [viewingEmployee, setViewingEmployee] = useState(null);
   
   // Mock attendance data
   const attendanceData = [
@@ -18,6 +19,27 @@ const Attendance = () => {
     { id: 6, employee: "Leonard Krasner", status: "leave", time: null, department: "Finance" },
     { id: 7, employee: "Floyd Miles", status: "present", time: "2023-06-01T08:30:00", department: "Engineering" },
     { id: 8, employee: "Emily Selman", status: "late", time: "2023-06-01T10:15:00", department: "Sales" }
+  ];
+
+  // Additional employee data for modal
+  const employeeDetails = {
+    1: { email: "michael.foster@example.com", phone: "+1 (555) 123-4567", position: "Senior Developer", joinDate: "2021-03-15" },
+    2: { email: "lindsay.walton@example.com", phone: "+1 (555) 234-5678", position: "Marketing Manager", joinDate: "2020-07-22" },
+    3: { email: "courtney.henry@example.com", phone: "+1 (555) 345-6789", position: "UI Designer", joinDate: "2022-01-10" },
+    4: { email: "tom.cook@example.com", phone: "+1 (555) 456-7890", position: "Product Manager", joinDate: "2019-11-05" },
+    5: { email: "whitney.francis@example.com", phone: "+1 (555) 567-8901", position: "HR Director", joinDate: "2021-09-18" },
+    6: { email: "leonard.krasner@example.com", phone: "+1 (555) 678-9012", position: "Finance Analyst", joinDate: "2020-05-27" },
+    7: { email: "floyd.miles@example.com", phone: "+1 (555) 789-0123", position: "Junior Developer", joinDate: "2022-04-03" },
+    8: { email: "emily.selman@example.com", phone: "+1 (555) 890-1234", position: "Sales Representative", joinDate: "2021-08-12" }
+  };
+
+  // Mock attendance history for the employee detail modal
+  const employeeAttendanceHistory = [
+    { date: "2023-06-05", status: "present", checkIn: "08:45", checkOut: "17:30" },
+    { date: "2023-06-04", status: "present", checkIn: "08:55", checkOut: "17:45" },
+    { date: "2023-06-03", status: "late", checkIn: "09:30", checkOut: "18:00" },
+    { date: "2023-06-02", status: "present", checkIn: "08:50", checkOut: "17:40" },
+    { date: "2023-06-01", status: "present", checkIn: "08:45", checkOut: "17:30" }
   ];
 
   // Mock attendance summary data
@@ -134,7 +156,17 @@ const Attendance = () => {
 
   // Handle view employee details
   const handleViewDetails = (employeeId) => {
-    alert(`Viewing details for employee ID: ${employeeId}`);
+    const employee = attendanceData.find(emp => emp.id === employeeId);
+    setViewingEmployee({
+      ...employee,
+      details: employeeDetails[employeeId],
+      attendanceHistory: employeeAttendanceHistory
+    });
+  };
+
+  // Close employee detail modal
+  const handleCloseModal = () => {
+    setViewingEmployee(null);
   };
 
   // Calculate pagination indexes
@@ -260,6 +292,7 @@ const Attendance = () => {
           </div>
         </div>
 
+        {/* Fixed Calendar Grid */}
         <div className="grid grid-cols-7 gap-1">
           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
             <div key={day} className="h-8 flex items-center justify-center text-xs font-medium text-surface-500 dark:text-surface-400">
@@ -273,7 +306,7 @@ const Attendance = () => {
           ))}
 
           {/* Calendar days */}
-          {calendarData.map((day) => {
+          {calendarData.map((day, index) => {
             const isCurrentDay = isToday(day.date);
             
             return (
@@ -307,6 +340,10 @@ const Attendance = () => {
                   <div className="flex items-center text-yellow-600 dark:text-yellow-400">
                     <div className="w-2 h-2 rounded-full bg-yellow-500 mr-1"></div>
                     <span>{day.attendance.late}</span>
+                  </div>
+                  <div className="flex items-center text-blue-600 dark:text-blue-400">
+                    <div className="w-2 h-2 rounded-full bg-blue-500 mr-1"></div>
+                    <span>{day.attendance.leave}</span>
                   </div>
                 </div>
               </div>
@@ -533,6 +570,134 @@ const Attendance = () => {
           </div>
         </div>
       </div>
+
+      {/* Employee Detail Modal */}
+      {viewingEmployee && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-surface-800 rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-4 border-b border-surface-200 dark:border-surface-700">
+              <h3 className="text-lg font-medium text-surface-900 dark:text-white">
+                Employee Details
+              </h3>
+              <button 
+                onClick={handleCloseModal}
+                className="text-surface-500 hover:text-surface-700 dark:text-surface-400 dark:hover:text-surface-200"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="p-4">
+              <div className="flex items-start">
+                <div className="flex-shrink-0 h-16 w-16 rounded-full bg-surface-200 dark:bg-surface-700"></div>
+                <div className="ml-4">
+                  <h4 className="text-xl font-semibold text-surface-900 dark:text-white">
+                    {viewingEmployee.employee}
+                  </h4>
+                  <p className="text-sm text-surface-500 dark:text-surface-400">
+                    {viewingEmployee.department} • {viewingEmployee.details.position}
+                  </p>
+                  
+                  <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <h5 className="text-sm font-medium text-surface-500 dark:text-surface-400">Contact Information</h5>
+                      <ul className="mt-2 space-y-2">
+                        <li className="text-sm text-surface-700 dark:text-surface-300">
+                          <span className="font-medium">Email:</span> {viewingEmployee.details.email}
+                        </li>
+                        <li className="text-sm text-surface-700 dark:text-surface-300">
+                          <span className="font-medium">Phone:</span> {viewingEmployee.details.phone}
+                        </li>
+                        <li className="text-sm text-surface-700 dark:text-surface-300">
+                          <span className="font-medium">Join Date:</span> {viewingEmployee.details.joinDate}
+                        </li>
+                      </ul>
+                    </div>
+                    
+                    <div>
+                      <h5 className="text-sm font-medium text-surface-500 dark:text-surface-400">Today's Status</h5>
+                      <div className="mt-2">
+                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          viewingEmployee.status === 'present' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+                          viewingEmployee.status === 'absent' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
+                          viewingEmployee.status === 'late' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
+                          'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                        }`}>
+                          {viewingEmployee.status.charAt(0).toUpperCase() + viewingEmployee.status.slice(1)}
+                        </span>
+                        {viewingEmployee.time && (
+                          <p className="mt-1 text-sm text-surface-700 dark:text-surface-300">
+                            Check-in: {format(parseISO(viewingEmployee.time), 'h:mm a')}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-6">
+                <h5 className="text-sm font-medium text-surface-900 dark:text-white mb-2">Attendance History</h5>
+                <div className="overflow-x-auto border border-surface-200 dark:border-surface-700 rounded-lg">
+                  <table className="min-w-full divide-y divide-surface-200 dark:divide-surface-700">
+                    <thead className="bg-surface-50 dark:bg-surface-800">
+                      <tr>
+                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wider">
+                          Date
+                        </th>
+                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wider">
+                          Status
+                        </th>
+                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wider">
+                          Check In
+                        </th>
+                        <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wider">
+                          Check Out
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white dark:bg-surface-800 divide-y divide-surface-200 dark:divide-surface-700">
+                      {viewingEmployee.attendanceHistory.map((record, index) => (
+                        <tr key={index}>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-surface-700 dark:text-surface-300">
+                            {record.date}
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap">
+                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                              record.status === 'present' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+                              record.status === 'absent' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
+                              record.status === 'late' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
+                              'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                            }`}>
+                              {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-surface-700 dark:text-surface-300">
+                            {record.checkIn || '-'}
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-surface-700 dark:text-surface-300">
+                            {record.checkOut || '-'}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            
+            <div className="px-4 py-3 bg-surface-50 dark:bg-surface-900 text-right sm:px-6 border-t border-surface-200 dark:border-surface-700">
+              <button
+                type="button"
+                onClick={handleCloseModal}
+                className="inline-flex justify-center py-2 px-4 border border-surface-300 dark:border-surface-600 shadow-sm text-sm font-medium rounded-md text-surface-700 dark:text-surface-300 bg-white dark:bg-surface-800 hover:bg-surface-50 dark:hover:bg-surface-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
