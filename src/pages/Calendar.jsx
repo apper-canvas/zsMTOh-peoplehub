@@ -3,6 +3,7 @@ import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, en
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Filter, X, Calendar as CalendarIcon, Clock, MapPin, Plus } from "lucide-react";
 import dataService from "../services/dataService";
+import EventForm from "../components/EventForm";
 
 function Calendar() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -19,6 +20,7 @@ function Calendar() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isEventFormOpen, setIsEventFormOpen] = useState(false);
   const filterRef = useRef(null);
 
   // Fetch events from data service
@@ -88,6 +90,43 @@ function Calendar() {
       ...prev,
       [type]: !prev[type]
     }));
+  };
+
+  // Toggle event form modal
+  const toggleEventForm = () => {
+    setIsEventFormOpen(!isEventFormOpen);
+  };
+
+  // Handle creating a new event
+  const handleCreateEvent = (eventData) => {
+    // Generate a unique ID for the new event
+    const newId = Math.max(0, ...events.map(e => e.id || 0)) + 1;
+    
+    // Create the new event object
+    const newEvent = {
+      id: newId,
+      ...eventData,
+      dateObj: parseISO(eventData.date)
+    };
+    
+    // Add the new event to the events list
+    const updatedEvents = [...events, newEvent];
+    setEvents(updatedEvents);
+    
+    // Update filtered events accordingly
+    if (filters[newEvent.type]) {
+      setFilteredEvents([...filteredEvents, newEvent]);
+    }
+    
+    // You could also call a service to save to backend
+    // dataService.saveEvent(newEvent);
+  };
+
+  // Go to today
+  const goToToday = () => {
+    const today = new Date();
+    setCurrentMonth(today);
+    setSelectedDate(today);
   };
 
   // Helper function to get events for a specific day
@@ -267,12 +306,18 @@ function Calendar() {
                   )}
                 </div>
                 
-                <button className="px-3 py-2 rounded-lg bg-primary text-white hover:bg-primary-dark flex items-center text-sm">
+                <button 
+                  className="px-3 py-2 rounded-lg bg-primary text-white hover:bg-primary-dark flex items-center text-sm"
+                  onClick={toggleEventForm}
+                >
                   <Plus size={16} className="mr-2" />
                   <span>Add Event</span>
                 </button>
                 
-                <button className="px-3 py-2 rounded-lg bg-primary text-white hover:bg-primary-dark flex items-center text-sm">
+                <button 
+                  className="px-3 py-2 rounded-lg bg-primary text-white hover:bg-primary-dark flex items-center text-sm"
+                  onClick={goToToday}
+                >
                   <CalendarIcon size={16} className="mr-2" />
                   <span>Today</span>
                 </button>
@@ -424,6 +469,14 @@ function Calendar() {
           )}
         </div>
       </div>
+
+      {/* Event Form Modal */}
+      <EventForm 
+        isOpen={isEventFormOpen} 
+        onClose={toggleEventForm} 
+        onSave={handleCreateEvent}
+        selectedDate={selectedDate}
+      />
     </div>
   );
 }
