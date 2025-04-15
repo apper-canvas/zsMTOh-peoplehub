@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Home from "./pages/Home";
 import Employees from "./pages/Employees";
 import Attendance from "./pages/Attendance";
+import Calendar from "./pages/Calendar";
 import Documents from "./pages/Documents";
 import Departments from "./pages/Departments";
 import Positions from "./pages/Positions";
@@ -95,7 +96,8 @@ function App() {
       name: "Human Resources",
       items: [
         { name: "Employee Directory", icon: <Users size={20} />, path: "/employees" },
-        { name: "Attendance", icon: <Calendar size={20} />, path: "/attendance" }
+        { name: "Attendance", icon: <Calendar size={20} />, path: "/attendance" },
+        { name: "Calendar", icon: <Calendar size={20} />, path: "/calendar" }
       ]
     },
     {
@@ -273,6 +275,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/employees" element={<Employees />} />
             <Route path="/attendance" element={<Attendance />} />
+            <Route path="/calendar" element={<Calendar />} />
             <Route path="/documents" element={<Documents />} />
             <Route path="/departments" element={<Departments />} />
             <Route path="/positions" element={<Positions />} />

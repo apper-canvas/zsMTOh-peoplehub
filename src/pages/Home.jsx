@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Filter, Plus, ChevronDown, Users, Clock, FileCheck, Award, Loader } from "lucide-react";
+import { Link } from "react-router-dom";
 import MainFeature from "../components/MainFeature";
 import DashboardCharts from "../components/DashboardCharts";
 import AddEmployeeModal from "../components/AddEmployeeModal";
@@ -549,9 +550,9 @@ function Home() {
                   ))}
                 </div>
                 
-                <button className="w-full mt-4 py-2 text-sm text-primary hover:text-primary-dark dark:hover:text-primary-light font-medium border border-primary rounded-lg">
+                <Link to="/calendar" className="w-full mt-4 py-2 text-sm text-primary hover:text-primary-dark dark:hover:text-primary-light font-medium border border-primary rounded-lg block text-center">
                   View Full Calendar
-                </button>
+                </Link>
               </div>
             </div>
           </div>
