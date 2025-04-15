@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Search, Filter, Plus, ChevronDown, Upload, Download, UserPlus, Mail, Phone, MapPin, Briefcase, Building, X, Check, Eye, User } from "lucide-react";
+import EmployeeFormModal from "../components/EmployeeFormModal";
 
 // Sample expanded employee data
 const EMPLOYEES = [
@@ -208,6 +209,8 @@ function Employees() {
   const [showDepartmentDropdown, setShowDepartmentDropdown] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [showFormModal, setShowFormModal] = useState(false);
+  const [formMode, setFormMode] = useState("add"); // add, edit
   
   // Filter employees based on search term and department selection
   useEffect(() => {
@@ -257,6 +260,19 @@ function Employees() {
     setSelectedEmployee(null);
   };
 
+  const handleAddEmployee = () => {
+    setFormMode("add");
+    setSelectedEmployee(null);
+    setShowFormModal(true);
+  };
+
+  const handleEditEmployee = (employee) => {
+    setFormMode("edit");
+    setSelectedEmployee(employee);
+    setShowDetailModal(false);
+    setShowFormModal(true);
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -269,7 +285,10 @@ function Employees() {
         </div>
         
         <div className="flex items-center space-x-3">
-          <button className="btn btn-primary">
+          <button 
+            className="btn btn-primary"
+            onClick={handleAddEmployee}
+          >
             <UserPlus size={18} className="mr-1.5" />
             Add Employee
           </button>
@@ -639,13 +658,24 @@ function Employees() {
               >
                 Close
               </button>
-              <button className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark">
+              <button 
+                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark"
+                onClick={() => handleEditEmployee(selectedEmployee)}
+              >
                 Edit Employee
               </button>
             </div>
           </motion.div>
         </div>
       )}
+
+      {/* Employee Form Modal */}
+      <EmployeeFormModal 
+        isOpen={showFormModal}
+        onClose={() => setShowFormModal(false)}
+        mode={formMode}
+        initialData={selectedEmployee}
+      />
     </div>
   );
 }
