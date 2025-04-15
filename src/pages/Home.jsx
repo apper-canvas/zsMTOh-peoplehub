@@ -4,6 +4,7 @@ import { Search, Filter, Plus, ChevronDown, Users, Clock, FileCheck, Award, Load
 import MainFeature from "../components/MainFeature";
 import DashboardCharts from "../components/DashboardCharts";
 import AddEmployeeModal from "../components/AddEmployeeModal";
+import EmployeeDetailModal from "../components/EmployeeDetailModal";
 import dataService from "../services/dataService";
 
 function Home() {
@@ -37,8 +38,10 @@ function Home() {
   // Events state
   const [events, setEvents] = useState([]);
   
-  // Modal state
+  // Modal states
   const [isAddEmployeeModalOpen, setIsAddEmployeeModalOpen] = useState(false);
+  const [isEmployeeDetailModalOpen, setIsEmployeeDetailModalOpen] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
   
   // Initialize data service
   useEffect(() => {
@@ -154,8 +157,16 @@ function Home() {
   };
   
   const handleEmployeeView = (employeeId) => {
-    // In a real app, this would navigate to employee details page
-    alert(`View employee details for ID: ${employeeId}`);
+    const employee = employees.find(emp => emp.id === employeeId);
+    if (employee) {
+      setSelectedEmployee(employee);
+      setIsEmployeeDetailModalOpen(true);
+    }
+  };
+  
+  const handleCloseEmployeeDetailModal = () => {
+    setIsEmployeeDetailModalOpen(false);
+    setSelectedEmployee(null);
   };
   
   const handleApproveLeaveRequest = async (requestId) => {
@@ -553,6 +564,17 @@ function Home() {
             isOpen={isAddEmployeeModalOpen}
             onClose={() => setIsAddEmployeeModalOpen(false)}
             onEmployeeAdded={handleAddEmployee}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Employee Detail Modal */}
+      <AnimatePresence>
+        {isEmployeeDetailModalOpen && selectedEmployee && (
+          <EmployeeDetailModal
+            isOpen={isEmployeeDetailModalOpen}
+            onClose={handleCloseEmployeeDetailModal}
+            employee={selectedEmployee}
           />
         )}
       </AnimatePresence>
