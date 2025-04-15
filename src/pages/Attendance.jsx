@@ -5,6 +5,8 @@ import { Calendar, ChevronLeft, ChevronRight, Filter, Download, User, Clock, Cal
 const Attendance = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedFilter, setSelectedFilter] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(8);
   
   // Mock attendance data
   const attendanceData = [
@@ -70,7 +72,77 @@ const Attendance = () => {
   // Filter handlers
   const handleFilterChange = (filter) => {
     setSelectedFilter(filter);
+    setCurrentPage(1); // Reset to first page when filter changes
   };
+
+  // Handle filter button click
+  const handleFilterButtonClick = () => {
+    alert("Filter options dialog would open here");
+  };
+
+  // Handle export button click
+  const handleExportClick = () => {
+    // Create a CSV data string
+    const headers = ["Employee", "Department", "Status", "Time"];
+    const csvRows = [headers];
+    
+    const filteredData = attendanceData
+      .filter(record => selectedFilter === "all" || record.status === selectedFilter);
+    
+    filteredData.forEach(record => {
+      const time = record.time ? format(parseISO(record.time), 'h:mm a') : '-';
+      csvRows.push([
+        record.employee,
+        record.department,
+        record.status,
+        time
+      ]);
+    });
+    
+    const csvData = csvRows.map(row => row.join(',')).join('\n');
+    
+    // Create a blob and download link
+    const blob = new Blob([csvData], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute('hidden', '');
+    a.setAttribute('href', url);
+    a.setAttribute('download', `attendance_${format(new Date(), 'yyyy-MM-dd')}.csv`);
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
+  // Pagination handlers
+  const totalFilteredItems = attendanceData.filter(
+    record => selectedFilter === "all" || record.status === selectedFilter
+  ).length;
+  
+  const totalPages = Math.ceil(totalFilteredItems / itemsPerPage);
+  
+  const handlePreviousPage = () => {
+    setCurrentPage(prev => Math.max(prev - 1, 1));
+  };
+  
+  const handleNextPage = () => {
+    setCurrentPage(prev => Math.min(prev + 1, totalPages));
+  };
+  
+  const handlePageClick = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Handle view employee details
+  const handleViewDetails = (employeeId) => {
+    alert(`Viewing details for employee ID: ${employeeId}`);
+  };
+
+  // Calculate pagination indexes
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = attendanceData
+    .filter(record => selectedFilter === "all" || record.status === selectedFilter)
+    .slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <div className="h-full">
@@ -83,11 +155,17 @@ const Attendance = () => {
           </p>
         </div>
         <div className="mt-4 md:mt-0 flex flex-col sm:flex-row gap-3">
-          <button className="inline-flex items-center justify-center px-4 py-2 border border-surface-300 dark:border-surface-600 rounded-md shadow-sm text-sm font-medium text-surface-700 dark:text-surface-200 bg-white dark:bg-surface-800 hover:bg-surface-50 dark:hover:bg-surface-700">
+          <button 
+            onClick={handleFilterButtonClick}
+            className="inline-flex items-center justify-center px-4 py-2 border border-surface-300 dark:border-surface-600 rounded-md shadow-sm text-sm font-medium text-surface-700 dark:text-surface-200 bg-white dark:bg-surface-800 hover:bg-surface-50 dark:hover:bg-surface-700"
+          >
             <Filter size={16} className="mr-2" />
             Filter
           </button>
-          <button className="inline-flex items-center justify-center px-4 py-2 border border-surface-300 dark:border-surface-600 rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90">
+          <button 
+            onClick={handleExportClick}
+            className="inline-flex items-center justify-center px-4 py-2 border border-surface-300 dark:border-surface-600 rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90"
+          >
             <Download size={16} className="mr-2" />
             Export
           </button>
@@ -165,6 +243,7 @@ const Attendance = () => {
             <button
               onClick={prevMonth}
               className="p-2 rounded-md hover:bg-surface-100 dark:hover:bg-surface-700"
+              aria-label="Previous month"
             >
               <ChevronLeft size={16} />
             </button>
@@ -174,6 +253,7 @@ const Attendance = () => {
             <button
               onClick={nextMonth}
               className="p-2 rounded-md hover:bg-surface-100 dark:hover:bg-surface-700"
+              aria-label="Next month"
             >
               <ChevronRight size={16} />
             </button>
@@ -327,9 +407,7 @@ const Attendance = () => {
               </tr>
             </thead>
             <tbody className="bg-white dark:bg-surface-800 divide-y divide-surface-200 dark:divide-surface-700">
-              {attendanceData
-                .filter(record => selectedFilter === "all" || record.status === selectedFilter)
-                .map((record) => (
+              {currentItems.map((record) => (
                 <tr key={record.id}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
@@ -358,7 +436,10 @@ const Attendance = () => {
                     {record.time ? format(parseISO(record.time), 'h:mm a') : '-'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button className="text-primary hover:text-primary/80 dark:text-primary-light dark:hover:text-primary-light/80">
+                    <button 
+                      onClick={() => handleViewDetails(record.id)}
+                      className="text-primary hover:text-primary/80 dark:text-primary-light dark:hover:text-primary-light/80"
+                    >
                       View
                     </button>
                   </td>
@@ -370,39 +451,79 @@ const Attendance = () => {
         
         <div className="bg-white dark:bg-surface-800 px-4 py-3 flex items-center justify-between border-t border-surface-200 dark:border-surface-700 sm:px-6">
           <div className="flex-1 flex justify-between sm:hidden">
-            <button className="relative inline-flex items-center px-4 py-2 border border-surface-300 dark:border-surface-600 text-sm font-medium rounded-md text-surface-700 dark:text-surface-300 bg-white dark:bg-surface-800 hover:bg-surface-50 dark:hover:bg-surface-700">
+            <button 
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1}
+              className={`relative inline-flex items-center px-4 py-2 border border-surface-300 dark:border-surface-600 text-sm font-medium rounded-md ${
+                currentPage === 1 
+                  ? "text-surface-400 dark:text-surface-500 cursor-not-allowed" 
+                  : "text-surface-700 dark:text-surface-300 bg-white dark:bg-surface-800 hover:bg-surface-50 dark:hover:bg-surface-700"
+              }`}
+            >
               Previous
             </button>
-            <button className="ml-3 relative inline-flex items-center px-4 py-2 border border-surface-300 dark:border-surface-600 text-sm font-medium rounded-md text-surface-700 dark:text-surface-300 bg-white dark:bg-surface-800 hover:bg-surface-50 dark:hover:bg-surface-700">
+            <button 
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+              className={`ml-3 relative inline-flex items-center px-4 py-2 border border-surface-300 dark:border-surface-600 text-sm font-medium rounded-md ${
+                currentPage === totalPages 
+                  ? "text-surface-400 dark:text-surface-500 cursor-not-allowed" 
+                  : "text-surface-700 dark:text-surface-300 bg-white dark:bg-surface-800 hover:bg-surface-50 dark:hover:bg-surface-700"
+              }`}
+            >
               Next
             </button>
           </div>
           <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
             <div>
               <p className="text-sm text-surface-700 dark:text-surface-300">
-                Showing <span className="font-medium">1</span> to <span className="font-medium">8</span> of{' '}
-                <span className="font-medium">20</span> results
+                Showing <span className="font-medium">{indexOfFirstItem + 1}</span> to{' '}
+                <span className="font-medium">{Math.min(indexOfLastItem, totalFilteredItems)}</span> of{' '}
+                <span className="font-medium">{totalFilteredItems}</span> results
               </p>
             </div>
             <div>
               <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                <button className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 text-sm font-medium text-surface-500 dark:text-surface-400 hover:bg-surface-50 dark:hover:bg-surface-700">
+                <button 
+                  onClick={handlePreviousPage}
+                  disabled={currentPage === 1}
+                  className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 text-sm font-medium ${
+                    currentPage === 1 
+                      ? "text-surface-400 dark:text-surface-500 cursor-not-allowed" 
+                      : "text-surface-500 dark:text-surface-400 hover:bg-surface-50 dark:hover:bg-surface-700"
+                  }`}
+                >
                   <span className="sr-only">Previous</span>
                   <ChevronLeft className="h-5 w-5" aria-hidden="true" />
                 </button>
-                <button aria-current="page" className="z-10 bg-primary/10 dark:bg-primary/20 border-primary dark:border-primary text-primary dark:text-primary-light relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                  1
-                </button>
-                <button className="bg-white dark:bg-surface-800 border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300 hover:bg-surface-50 dark:hover:bg-surface-700 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                  2
-                </button>
-                <button className="bg-white dark:bg-surface-800 border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300 hover:bg-surface-50 dark:hover:bg-surface-700 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                  3
-                </button>
-                <span className="relative inline-flex items-center px-4 py-2 border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 text-sm font-medium text-surface-700 dark:text-surface-300">
-                  ...
-                </span>
-                <button className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 text-sm font-medium text-surface-500 dark:text-surface-400 hover:bg-surface-50 dark:hover:bg-surface-700">
+                {[...Array(Math.min(totalPages, 3))].map((_, index) => (
+                  <button
+                    key={index + 1}
+                    onClick={() => handlePageClick(index + 1)}
+                    aria-current={currentPage === index + 1 ? "page" : undefined}
+                    className={`${
+                      currentPage === index + 1
+                        ? "z-10 bg-primary/10 dark:bg-primary/20 border-primary dark:border-primary text-primary dark:text-primary-light"
+                        : "bg-white dark:bg-surface-800 border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300 hover:bg-surface-50 dark:hover:bg-surface-700"
+                    } relative inline-flex items-center px-4 py-2 border text-sm font-medium`}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+                {totalPages > 3 && (
+                  <span className="relative inline-flex items-center px-4 py-2 border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 text-sm font-medium text-surface-700 dark:text-surface-300">
+                    ...
+                  </span>
+                )}
+                <button 
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages}
+                  className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-800 text-sm font-medium ${
+                    currentPage === totalPages 
+                      ? "text-surface-400 dark:text-surface-500 cursor-not-allowed" 
+                      : "text-surface-500 dark:text-surface-400 hover:bg-surface-50 dark:hover:bg-surface-700"
+                  }`}
+                >
                   <span className="sr-only">Next</span>
                   <ChevronRight className="h-5 w-5" aria-hidden="true" />
                 </button>
