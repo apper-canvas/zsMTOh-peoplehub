@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, isSameMonth, isSameDay, addDays, parseISO } from "date-fns";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Filter, X, Calendar as CalendarIcon, Clock, MapPin } from "lucide-react";
@@ -18,6 +18,8 @@ function Calendar() {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const filterRef = useRef(null);
 
   // Fetch events from data service
   useEffect(() => {
@@ -42,6 +44,20 @@ function Calendar() {
     fetchEvents();
   }, []);
 
+  // Handle clicks outside the filter dropdown to close it
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (filterRef.current && !filterRef.current.contains(event.target)) {
+        setIsFilterOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   // Filter events when filters change
   useEffect(() => {
     const filtered = events.filter(event => filters[event.type] || !event.type);
@@ -61,17 +77,22 @@ function Calendar() {
     setSelectedDate(day);
   };
 
-  // Helper function to get events for a specific day
-  const getEventsForDay = day => {
-    return filteredEvents.filter(event => isSameDay(parseISO(event.date), day));
+  // Toggle filter dropdown
+  const toggleFilter = () => {
+    setIsFilterOpen(!isFilterOpen);
   };
 
   // Toggle filter for event types
-  const toggleFilter = type => {
+  const toggleFilterType = type => {
     setFilters(prev => ({
       ...prev,
       [type]: !prev[type]
     }));
+  };
+
+  // Helper function to get events for a specific day
+  const getEventsForDay = day => {
+    return filteredEvents.filter(event => isSameDay(parseISO(event.date), day));
   };
 
   // Get event type color
@@ -219,23 +240,28 @@ function Calendar() {
               </div>
               
               <div className="flex flex-wrap gap-2">
-                <div className="relative">
-                  <button className="px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 hover:bg-surface-100 dark:hover:bg-surface-700 flex items-center text-sm">
+                <div className="relative" ref={filterRef}>
+                  <button 
+                    className="px-3 py-2 rounded-lg border border-surface-300 dark:border-surface-600 hover:bg-surface-100 dark:hover:bg-surface-700 flex items-center text-sm"
+                    onClick={toggleFilter}
+                  >
                     <Filter size={16} className="mr-2" />
                     <span>Filter</span>
                   </button>
-                  <div className="absolute top-full right-0 mt-2 bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-lg shadow-lg z-10 p-3 w-48">
-                    <div className="text-sm font-medium mb-2 text-surface-900 dark:text-surface-100">Event Types</div>
-                    {filterOptions.map(option => (
-                      <div key={option.type} className="flex items-center mb-2 last:mb-0">
-                        <button
-                          className={`w-4 h-4 rounded-sm mr-2 ${option.color} ${!filters[option.type] ? 'opacity-30' : ''}`}
-                          onClick={() => toggleFilter(option.type)}
-                        />
-                        <span className="text-sm text-surface-700 dark:text-surface-300">{option.label}</span>
-                      </div>
-                    ))}
-                  </div>
+                  {isFilterOpen && (
+                    <div className="absolute top-full right-0 mt-2 bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-lg shadow-lg z-10 p-3 w-48">
+                      <div className="text-sm font-medium mb-2 text-surface-900 dark:text-surface-100">Event Types</div>
+                      {filterOptions.map(option => (
+                        <div key={option.type} className="flex items-center mb-2 last:mb-0">
+                          <button
+                            className={`w-4 h-4 rounded-sm mr-2 ${option.color} ${!filters[option.type] ? 'opacity-30' : ''}`}
+                            onClick={() => toggleFilterType(option.type)}
+                          />
+                          <span className="text-sm text-surface-700 dark:text-surface-300">{option.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 
                 <button className="px-3 py-2 rounded-lg bg-primary text-white hover:bg-primary-dark flex items-center text-sm">
