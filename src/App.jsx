@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Home from "./pages/Home";
 import Employees from "./pages/Employees";
 import Attendance from "./pages/Attendance";
+import Documents from "./pages/Documents";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -268,6 +269,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/employees" element={<Employees />} />
             <Route path="/attendance" element={<Attendance />} />
+            <Route path="/documents" element={<Documents />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
