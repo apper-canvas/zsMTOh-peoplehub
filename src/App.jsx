@@ -7,6 +7,7 @@ import Employees from "./pages/Employees";
 import Attendance from "./pages/Attendance";
 import Documents from "./pages/Documents";
 import Departments from "./pages/Departments";
+import Positions from "./pages/Positions";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -272,6 +273,7 @@ function App() {
             <Route path="/attendance" element={<Attendance />} />
             <Route path="/documents" element={<Documents />} />
             <Route path="/departments" element={<Departments />} />
+            <Route path="/positions" element={<Positions />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
