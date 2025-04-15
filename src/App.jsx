@@ -4,6 +4,7 @@ import { Sun, Moon, Menu, X, User, Calendar, FileText, BarChart3, Settings, User
 import { motion, AnimatePresence } from "framer-motion";
 import Home from "./pages/Home";
 import Employees from "./pages/Employees";
+import Attendance from "./pages/Attendance";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -266,6 +267,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/employees" element={<Employees />} />
+            <Route path="/attendance" element={<Attendance />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
