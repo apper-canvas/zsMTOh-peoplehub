@@ -12,6 +12,7 @@ import Positions from "./pages/Positions";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import PerformanceReviews from "./pages/PerformanceReviews";
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -96,6 +97,7 @@ function App() {
       name: "Human Resources",
       items: [
         { name: "Employee Directory", icon: <Users size={20} />, path: "/employees" },
+        { name: "Performance Reviews", icon: <FileText size={20} />, path: "/performance-reviews" },
         { name: "Attendance", icon: <CalendarIcon size={20} />, path: "/attendance" },
         { name: "Calendar", icon: <CalendarIcon size={20} />, path: "/calendar" }
       ]
@@ -274,6 +276,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/employees" element={<Employees />} />
+            <Route path="/performance-reviews" element={<PerformanceReviews />} />
             <Route path="/attendance" element={<Attendance />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/documents" element={<Documents />} />
